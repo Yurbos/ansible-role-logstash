@@ -1,6 +1,19 @@
 ---
-- name: Include OS Specific setup tasks
-  include: setup-{{ ansible_os_family }}.yml
+- name: Add Elasticsearch GPG key.
+  rpm_key:
+    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add Logstash repository.
+  template:
+    src: logstash.repo.j2
+    dest: /etc/yum.repos.d/logstash.repo
+    mode: 0644
+
+- name: Install Logstash.
+  package:
+    name: logstash
+    state: present
 
 - include: config.yml
 - include: plugins.yml
